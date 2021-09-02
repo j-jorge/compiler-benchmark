@@ -8,7 +8,7 @@ cmake_command=(cmake ../cmake -G Ninja -DCMAKE_BUILD_TYPE=Release)
 generate_project()
 {
     local n="$1"
-    local callee=$(((n / 10 / 2) * 10))
+    local callee=$((n / 2))
 
     cat > "include/foo_$n.hpp" <<EOF
 #pragma once
@@ -37,18 +37,17 @@ int main()
 EOF
 
     (
-        echo "add_executable(main_$n"
-        echo '  ${source_root}/main_'"$n"'.cpp'
+        echo "add_library(lib$n OBJECT \${source_root}/foo_$n.cpp)"
 
-        local i=0
-        while [[ $i -le $n ]]
+        echo "add_executable(main_$n \${source_root}/main_$n.cpp)"
+        echo "target_link_libraries(main_$n"
+
+        for ((i=0; i <= $n; ++i))
         do
-            echo '  ${source_root}/foo_'"$i"'.cpp'
-            i=$((i + 10))
+            echo "  \$<TARGET_OBJECTS:lib$i>"
         done
 
-        echo ')'
-        echo
+        echo ")"
     ) >> "$cmakelists"
 }
 
@@ -102,7 +101,9 @@ generate_icc()
 
     cd ../icc-build-lto
 
-    LDFLAGS=-flto CXXFLAGS=-flto "${cmake_command[@]}"
+    local flags="-ipo -fno-fat-lto-objects"
+
+    LDFLAGS="$flags" CXXFLAGS="$flags" "${cmake_command[@]}"
 
     cd ..
 }
@@ -117,6 +118,7 @@ project(benchmark LANGUAGES CXX)
 set(source_root "${CMAKE_CURRENT_LIST_DIR}/../src")
 include_directories("${CMAKE_CURRENT_LIST_DIR}/../include")
 
+add_library(lib0 OBJECT ${source_root}/foo_0.cpp)
 EOF
 
 cat > "include/foo_0.hpp" <<EOF
@@ -131,9 +133,9 @@ int foo_0(int x)
 }
 EOF
 
-for i in {1..100}
+for i in {1..1000}
 do
-    generate_project $((i * 10))
+    generate_project "$i"
 done
 
 for arg in "$@"
