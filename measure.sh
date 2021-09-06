@@ -34,6 +34,12 @@ benchmark()
 
     measure "$prefix" no-lto
     measure "$prefix" lto
+
+    (
+        echo -e "# ~#objects\tno-lto\tlto"
+        join "$prefix"-no-lto.txt "$prefix"-lto.txt
+    ) \
+        > "$prefix".txt
 }
 
 if [ -d clang-build-no-lto ]
