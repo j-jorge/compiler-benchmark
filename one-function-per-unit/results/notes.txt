@@ -1,0 +1,7 @@
+clang -flto fails (starts with 996):
+FAILED: main_1000
+: && /usr/bin/clang++ -flto=thin -O3 -DNDEBUG -flto=thin @CMakeFiles/main_1000.rsp -o main_1000  && :
+/usr/bin/ld : ne peut trouver -lgcc
+/usr/bin/ld : ne peut pas trouver /usr/bin/../lib/gcc/x86_64-linux-gnu/11/crtend.o : Too many open files
+/usr/bin/ld : ne peut pas trouver /usr/bin/../lib/gcc/x86_64-linux-gnu/11/../../../x86_64-linux-gnu/crtn.o : Too many open files
+clang: error: linker command failed with exit code 1 (use -v to see invocation)

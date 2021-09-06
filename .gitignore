@@ -5,13 +5,13 @@ gcc-no-lto.txt
 icc-lto.txt
 icc-no-lto.txt
 
-/clang-build-lto
-/clang-build-no-lto
-/gcc-build-lto
-/gcc-build-no-lto
-/icc-build-lto
-/icc-build-no-lto
+clang-build-lto
+clang-build-no-lto
+gcc-build-lto
+gcc-build-no-lto
+icc-build-lto
+icc-build-no-lto
 
-/cmake
-/include
-/src
+cmake
+include
+src
